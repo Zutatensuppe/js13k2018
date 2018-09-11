@@ -5,13 +5,13 @@ let pump = require('pump')
 
 gulp.task('compress', cb => {
   pump([
-      gulp.src('src/game.js'),
+      gulp.src('src/*.js'),
       babel({
         presets: ['env']
       }),
       uglify({
         mangle: {
-          toplevel: true,
+          toplevel: false,
           properties: {
             regex: /^_/,
           },

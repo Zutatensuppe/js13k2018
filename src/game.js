@@ -34,23 +34,6 @@
     raf(frame)
   }
 
-  const initKeys = canvas => {
-    const keys = {}
-    canvas.addEventListener('keydown', e => {
-      keys[e.key] = true
-    })
-    canvas.addEventListener('keyup', e => {
-      keys[e.key] = false
-    })
-    return keys
-  }
-
-  const initCtx = canvas => {
-    const ctx = canvas.getContext('2d')
-    ctx.imageSmoothingEnabled = false
-    return ctx
-  }
-
   const GRAVITY = 9 / 16
 
   const STATE_MENU = 0;
@@ -62,9 +45,6 @@
   const STATE_HAS_ON_TOP = 2;
 
   const FPS = 60;
-
-  const WIDTH = 640;
-  const HEIGHT = 480;
 
   const BOX_SIZE = 32;
 
@@ -155,8 +135,16 @@
   const canvas = d.getElementById('game')
   canvas.focus()
 
-  const keys = initKeys(canvas)
-  const ctx = initCtx(canvas)
+  const keys = {}
+  canvas.addEventListener('keydown', e => {
+    keys[e.key] = true
+  })
+  canvas.addEventListener('keyup', e => {
+    keys[e.key] = false
+  })
+
+  const ctx = canvas.getContext('2d')
+  ctx.imageSmoothingEnabled = false
 
   const isJump = keys => keys['w'] || keys['ArrowUp'] || keys[' ']
   const isDown = keys => keys['s'] || keys['ArrowDown']
@@ -166,11 +154,11 @@
   const viewport = {
     x: 0,
     y: 0,
-    w: WIDTH / 2,
-    h: HEIGHT,
+    w: 320,
+    h: 480,
   };
 
-  const BASE_X = WIDTH/2 - WIDTH/4;
+  const BASE_X = 160;
 
   let color = '#fff';
   let invColor = '#222';
@@ -179,7 +167,7 @@
   let state = STATE_MENU;
 
   let score = 0
-  let hiscore = 0
+  let hiscore = w.localStorage.getItem('hiscore') || 0
 
   const img = (path, cb) => {
     var image = new Image();
@@ -305,7 +293,7 @@
       160 - 16,
       player.y + player.h
     ))
-    for (let i = 8; i < HEIGHT * 2 / BOX_SIZE; i++) {
+    for (let i = 8; i < viewport.h * 2 / BOX_SIZE; i++) {
       boxes.push(box(
         randint(0, viewport.w - BOX_SIZE),
         i * BOX_SIZE
@@ -321,41 +309,201 @@
   }
 
   let canStartGame = true
+  var INSTRUMENT_BEEP = 5;
+  var INSTRUMENT_BEEP2 = 6;
+  var INSTRUMENTS = {};
+  INSTRUMENTS[INSTRUMENT_BEEP] = jsfxr([2,,0.04,0.2,0.4,0.5,,,,,,,,,,,,,1,,,,,0.2]);
+  INSTRUMENTS[INSTRUMENT_BEEP2] = jsfxr([1,,0.09,0.2,0.4,0.5,,,,,,,,,,,,,1,,,,,0.2]);
 
   const music = () => {
+    // instruments have numbers 1 - ....
+    // loops have numbers 101 - ....
+    var DRUMLOOP = 101;
+    var loops = {};
+    loops[DRUMLOOP] = [
+      [{n: INSTRUMENT_BEEP, p: .4}],
+      [],
+      [{n: INSTRUMENT_BEEP, p: .4}],
+      [],
+      [{n: INSTRUMENT_BEEP, p: .5}],
+      [],
+      [{n: INSTRUMENT_BEEP, p: .6}],
+      []
+    ];
 
+    var song = [
+      [DRUMLOOP],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+
+      [DRUMLOOP],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+
+      [DRUMLOOP],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+
+      [DRUMLOOP],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+
+      [DRUMLOOP, {n: INSTRUMENT_BEEP2, p: 1}],
+      [],
+      [{n: INSTRUMENT_BEEP2, p: .6}],
+      [],
+      [],
+      [],
+      [],
+      [],
+
+      [DRUMLOOP],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+
+      [DRUMLOOP],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+
+      [DRUMLOOP, {n: INSTRUMENT_BEEP2, p: .7}],
+      [],
+      [],
+      [],
+      [{n: INSTRUMENT_BEEP2, p: .8}],
+      [],
+      [],
+      [],
+
+      [DRUMLOOP, {n: INSTRUMENT_BEEP2, p: 1.2}],
+      [],
+      [{n: INSTRUMENT_BEEP2, p: .9}],
+      [],
+      [{n: INSTRUMENT_BEEP2, p: .6}],
+      [],
+      [],
+      [{n: INSTRUMENT_BEEP2, p: .9}],
+
+      [DRUMLOOP, {n: INSTRUMENT_BEEP2, p: .6}],
+      [],
+      [],
+      [],
+      [{n: INSTRUMENT_BEEP2, p: .8}],
+      [],
+      [],
+      [],
+
+      [DRUMLOOP, {n: INSTRUMENT_BEEP2, p: .9}],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+
+      [DRUMLOOP, {n: INSTRUMENT_BEEP2, p: 1.2}],
+      [],
+      [{n: INSTRUMENT_BEEP2, p: 1}],
+      [],
+      [{n: INSTRUMENT_BEEP2, p: .8}],
+      [],
+      [{n: INSTRUMENT_BEEP2, p: .6}],
+      [],
+
+      [DRUMLOOP, {n: INSTRUMENT_BEEP2, p: 1}],
+      [],
+      [{n: INSTRUMENT_BEEP2, p: .6}],
+      [],
+      [],
+      [],
+      [],
+      [],
+    ];
+
+    // Fire up a sequencer with all of the above
+    new Sequencer([
+      120, // milliseconds per beat
+      INSTRUMENTS, // The Audio Elements
+      loops, // Loops
+      song, // The actual song
+      true, // Loop over and over
+      1.4 // seconds buffer. ~min Chrome lets us have in a background tab
+    ]).play();
   }
 
-  const sound = (seq) => {
-    const audio = new Audio();
-    audio.src = jsfxr(seq);
-    return audio
+  function ArcadeAudio() {
+    this.sounds = {};
   }
+  ArcadeAudio.prototype.add = function( key, count, settings ) {
+    this.sounds[ key ] = [];
+    settings.forEach( function( elem, index ) {
+      this.sounds[ key ].push( {
+        tick: 0,
+        count: count,
+        pool: []
+      } );
+      for( var i = 0; i < count; i++ ) {
+        var audio = new Audio();
+        audio.src = jsfxr( elem );
+        this.sounds[ key ][ index ].pool.push( audio );
+      }
+    }, this );
+  };
+  ArcadeAudio.prototype.play = function( key ) {
+    var sound = this.sounds[ key ];
+    var soundData = sound.length > 1 ? sound[ Math.floor( Math.random() * sound.length ) ] : sound[ 0 ];
+    soundData.pool[ soundData.tick ].play();
+    soundData.tick < soundData.count - 1 ? soundData.tick++ : soundData.tick = 0;
+  };
 
-  const SND_LAND = sound([1,,0.2,,0.2,0.2,,0.1,,,,,,,,0.3,,,1,,,,,0.3])
-  const SND_DIE = sound([3,,0.2,0.3,0.4,0.2,,-0.3,,,,,,,,0.1,,,1,,,,,0.3])
-  const SND_JUMP = sound([1,,0.1,,0.1,0.3,,0.2,,,,,,,,0.3,,,1,,,,,0.3])
-
-  const land = () => {
-    player.velocity_y = 0
-
-    SND_LAND.play()
-  }
+  var aa = new ArcadeAudio();
+  aa.add('die', 1, [[3,,0.1645,0.7236,0.3402,0.0317,,,,,,,,,,,,,1,,,,,0.5]])
+  aa.add('jump', 2, [[1,,0.1,,0.1,0.3,,0.2,,,,,,,,0.3,,,1,,,,,0.3]])
 
   const die = () => {
     state = STATE_DEAD
     hiscore = Math.max(hiscore, score)
+    w.localStorage.setItem('hiscore', hiscore)
     canStartGame = false
-
-    SND_DIE.play()
+    aa.play('die')
   }
 
   const jump = () => {
     player.velocity_y = -9
-
-    SND_JUMP.play()
+    aa.play('jump')
   }
 
+  let sized = false
   const updateNonGame = keys => {
     if (!canStartGame) {
       canStartGame = !isJump(keys)
@@ -363,6 +511,20 @@
     }
 
     if (isJump(keys)) {
+      if (!sized) {
+        let cur = viewport.h
+        let inter = setInterval(() => {
+          if (cur >= w.innerHeight) {
+            canvas.style=`height: 100%;`
+            clearInterval(inter)
+            return
+          }
+          canvas.style=`height: ${cur}px;`
+          cur += 20;
+        }, 15)
+        sized = true
+        music()
+      }
       state = STATE_GAME
       init()
       jump()
@@ -435,15 +597,11 @@
       let comesFromTop = yOnBox >= player.y && yOnBox === possibleYOnBox
 
       if (overlapsX && comesFromTop) {
+        player.y = yOnBox
         if (isJump(keys)) {
-          player.y = yOnBox
           jump()
         } else {
           player.velocity_y = 0
-          if (player.y !== yOnBox) {
-            land()
-          }
-          player.y = yOnBox
         }
         b.state = STATE_HAS_ON_TOP
       } else {
@@ -584,11 +742,11 @@
   }
 
   const drawBorders = () => {
-    fillRect(0, 0, BASE_X, HEIGHT, invColor)
-    fillRect(BASE_X + viewport.w, 0, BASE_X, HEIGHT, invColor)
+    fillRect(0, 0, BASE_X, viewport.h, invColor)
+    fillRect(BASE_X + viewport.w, 0, BASE_X, viewport.h, invColor)
 
-    fillRect(0, 0, BASE_X -1, HEIGHT, color)
-    fillRect(BASE_X + viewport.w + 1, 0, BASE_X, HEIGHT, color)
+    fillRect(0, 0, BASE_X -1, viewport.h, color)
+    fillRect(BASE_X + viewport.w + 1, 0, BASE_X, viewport.h, color)
   }
 
   const drawLvlOverlay = () => {

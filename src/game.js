@@ -63,36 +63,90 @@
   const ENEMY_CHANCE = 50;
 
   const initGfx = () => {
+    let dinoBB = [
+      [15, 6, 9, 14],
+      [24, 13, 4, 7],
+      [10, 22, 8, 10],
+      [4, 20, 3, 7],
+      [7, 22, 3, 7],
+      [12, 20, 10, 4],
+      [14, 18, 6, 9],
+    ]
+    let dinoDuckBB = [
+      [10, 22, 8, 10],
+      [6, 23, 4, 7],
+      [1, 23, 5, 3],
+      [19, 15, 9, 13],
+      [18, 23, 5, 8],
+      [25, 22, 7, 6],
+    ]
+    let pteroBB0 = [
+      [1, 8, 9, 12],
+      [6, 2, 2, 6],
+      [8, 0, 9, 17],
+      [17, 4, 6, 12],
+      [4, 8, 4, 8],
+      [27, 8, 5, 5],
+    ]
+    let pteroBB1 = [
+      [1, 8, 31, 4],
+      [5, 12, 20, 2],
+      [9, 6, 8, 9],
+      [2, 14, 8, 3],
+      [17, 3, 6, 5],
+      [23, 5, 5, 3],
+    ]
+    let pteroBB2 = [
+      [1, 8, 31, 4],
+      [5, 12, 20, 2],
+      [9, 6, 8, 9],
+      [2, 14, 8, 3],
+      [17, 3, 6, 5],
+      [23, 5, 5, 3],
+    ]
+    let pteroBB3 = [
+      [1, 7, 31, 4],
+      [4, 6, 15, 10],
+      [17, 2, 6, 5],
+      [23, 4, 5, 3],
+    ]
     return {
-      DINO_DUCK: [146, 0, DINO_SIZE, DINO_SIZE],
-      DINO_DUCK_REV: [178, 0, DINO_SIZE, DINO_SIZE],
+      DINO_DUCK: [146, 0, DINO_SIZE, DINO_SIZE, dinoDuckBB],
+      DINO_DUCK_REV: [178, 0, DINO_SIZE, DINO_SIZE, dinoDuckBB],
       DINO: [
-        [114, 0, DINO_SIZE, DINO_SIZE],
-        [306, 0, DINO_SIZE, DINO_SIZE],
-        [338, 0, DINO_SIZE, DINO_SIZE],
-        [306, 0, DINO_SIZE, DINO_SIZE],
+        [114, 0, DINO_SIZE, DINO_SIZE, dinoBB],
+        [306, 0, DINO_SIZE, DINO_SIZE, dinoBB],
+        [338, 0, DINO_SIZE, DINO_SIZE, dinoBB],
+        [306, 0, DINO_SIZE, DINO_SIZE, dinoBB],
       ],
       DINO_REV: [
-        [210, 0, DINO_SIZE, DINO_SIZE],
-        [242, 0, DINO_SIZE, DINO_SIZE],
-        [274, 0, DINO_SIZE, DINO_SIZE],
-        [242, 0, DINO_SIZE, DINO_SIZE],
+        [210, 0, DINO_SIZE, DINO_SIZE, dinoBB],
+        [242, 0, DINO_SIZE, DINO_SIZE, dinoBB],
+        [274, 0, DINO_SIZE, DINO_SIZE, dinoBB],
+        [242, 0, DINO_SIZE, DINO_SIZE, dinoBB],
       ],
       ENEMY: [
-        [370, 0, PTERO_WIDTH, PTERO_HEIGHT],
-        [370 + PTERO_WIDTH, 0, PTERO_WIDTH, PTERO_HEIGHT],
-        [370 + PTERO_WIDTH * 2, 0, PTERO_WIDTH, PTERO_HEIGHT],
-        [370 + PTERO_WIDTH * 3, 0, PTERO_WIDTH, PTERO_HEIGHT],
-        [370 + PTERO_WIDTH * 2, 0, PTERO_WIDTH, PTERO_HEIGHT],
-        [370 + PTERO_WIDTH, 0, PTERO_WIDTH, PTERO_HEIGHT],
+        [370, 0, PTERO_WIDTH, PTERO_HEIGHT, pteroBB0],
+        [370 + PTERO_WIDTH, 0, PTERO_WIDTH, PTERO_HEIGHT, pteroBB1],
+        [370 + PTERO_WIDTH * 2, 0, PTERO_WIDTH, PTERO_HEIGHT, pteroBB2],
+        [370 + PTERO_WIDTH * 3, 0, PTERO_WIDTH, PTERO_HEIGHT, pteroBB3],
+        [370 + PTERO_WIDTH * 2, 0, PTERO_WIDTH, PTERO_HEIGHT, pteroBB2],
+        [370 + PTERO_WIDTH, 0, PTERO_WIDTH, PTERO_HEIGHT, pteroBB1],
       ],
       ENEMY_REV: [
-        [498, 0, PTERO_WIDTH, PTERO_HEIGHT],
-        [498 + PTERO_WIDTH, 0, PTERO_WIDTH, PTERO_HEIGHT],
-        [498 + PTERO_WIDTH * 2, 0, PTERO_WIDTH, PTERO_HEIGHT],
-        [498 + PTERO_WIDTH * 3, 0, PTERO_WIDTH, PTERO_HEIGHT],
-        [498 + PTERO_WIDTH * 2, 0, PTERO_WIDTH, PTERO_HEIGHT],
-        [498 + PTERO_WIDTH, 0, PTERO_WIDTH, PTERO_HEIGHT],
+        [498, 0, PTERO_WIDTH, PTERO_HEIGHT, pteroBB0],
+        [498 + PTERO_WIDTH, 0, PTERO_WIDTH, PTERO_HEIGHT, pteroBB1],
+        [498 + PTERO_WIDTH * 2, 0, PTERO_WIDTH, PTERO_HEIGHT, pteroBB2],
+        [498 + PTERO_WIDTH * 3, 0, PTERO_WIDTH, PTERO_HEIGHT, pteroBB3],
+        [498 + PTERO_WIDTH * 2, 0, PTERO_WIDTH, PTERO_HEIGHT, pteroBB2],
+        [498 + PTERO_WIDTH, 0, PTERO_WIDTH, PTERO_HEIGHT, pteroBB1],
+      ],
+      CACTUS: [
+        [96, 0, CACTUS_WIDTH, CACTUS_HEIGHT, [
+          [5, 0, 8, 24],
+          [0, 9, 5, 9],
+          [12, 11, 6, 11],
+        ]],
       ],
       BOX: [
         [0, 0, BOX_SIZE, BOX_SIZE],
@@ -100,9 +154,6 @@
       ],
       BOX_SLEEP: [
         [64, 0, BOX_SIZE, BOX_SIZE],
-      ],
-      CACTUS: [
-        [96, 0, CACTUS_WIDTH, CACTUS_HEIGHT],
       ],
     }
   }
@@ -127,9 +178,34 @@
   }
 
   const overlaps = (a, player) => {
-    let A = enemyBoundingBox(a)
-    let B = playerBoundingBox(player)
-    return A[0] < B[2] && A[2] > B[0] && A[1] < B[3] && A[3] > B[1]
+    let aBoxes = a.gfx[4]
+    let bBoxes = player.gfx[4]
+
+    var ax = a.velocity_x < 0 ? a.w : 0
+    var ap = a.velocity_x < 0 ? -1 : 1
+    var bx = player.velocity_x < 0 ? player.w : 0
+    var bp = player.velocity_x < 0 ? -1 : 1
+
+    for (let i = 0; i < aBoxes.length; i++) {
+      for (let j = 0; j < bBoxes.length; j++) {
+        let A = [
+          a.x + ax + aBoxes[i][0] * ap,
+          a.y + aBoxes[i][1],
+          a.x + ax + (aBoxes[i][0] + aBoxes[i][2]) * ap,
+          a.y + aBoxes[i][1] + aBoxes[i][3],
+        ]
+        let B = [
+          player.x + bx + (bBoxes[j][0]) * bp,
+          player.y + bBoxes[j][1],
+          player.x + bx + (bBoxes[j][0] + bBoxes[j][2]) * bp,
+          player.y + bBoxes[j][1] + bBoxes[j][3],
+        ]
+        if (A[0] < B[2] && A[2] > B[0] && A[1] < B[3] && A[3] > B[1]) {
+          return true
+        }
+      }
+    }
+    return false
   }
 
   const canvas = d.getElementById('game')
@@ -188,6 +264,7 @@
       y: y,
       w: BOX_SIZE,
       h: BOX_SIZE,
+      gfx: GFX.BOX_SLEEP[0]
     }
   }
 
@@ -201,6 +278,7 @@
       y: y,
       w: PTERO_WIDTH,
       h: PTERO_HEIGHT,
+      gfx: velocity_x > 0 ? GFX.ENEMY : GFX.ENEMY_REV,
     }
   }
 
@@ -214,42 +292,7 @@
       y: y,
       w: CACTUS_WIDTH,
       h: CACTUS_HEIGHT,
-    }
-  }
-
-  const enemyBoundingBox = enemy => {
-    if (enemy.type === ENEMY_PTERO) {
-      return [
-        enemy.x,
-        enemy.y + 3,
-        enemy.x + enemy.w,
-        enemy.y + 18,
-      ]
-    } else {
-      return [
-        enemy.x,
-        enemy.y,
-        enemy.x + enemy.w,
-        enemy.y + enemy.h,
-      ]
-    }
-  }
-
-  const playerBoundingBox = (player) => {
-    if (player.state === STATE_DUCK) {
-      return [
-        player.x + 1,
-        player.y + 15,
-        player.x + player.w - 2,
-        player.y + player.h,
-      ]
-    } else {
-      return [
-        player.x + 4,
-        player.y + 4,
-        player.x + player.w - 8,
-        player.y + player.h,
-      ]
+      gfx: GFX.CACTUS,
     }
   }
 
@@ -286,6 +329,7 @@
       y: 128,
       w: 32,
       h: 32,
+      gfx: GFX.DINO[0],
     }
 
     boxes = []
@@ -312,8 +356,8 @@
   var INSTRUMENT_BEEP = 5;
   var INSTRUMENT_BEEP2 = 6;
   var INSTRUMENTS = {};
-  INSTRUMENTS[INSTRUMENT_BEEP] = jsfxr([2,,0.04,0.2,0.4,0.5,,,,,,,,,,,,,1,,,,,0.2]);
-  INSTRUMENTS[INSTRUMENT_BEEP2] = jsfxr([1,,0.09,0.2,0.4,0.5,,,,,,,,,,,,,1,,,,,0.2]);
+  INSTRUMENTS[INSTRUMENT_BEEP] = jsfxr([2,,0.04,0.2,0.4,0.5,,,,,,,,,,,,,1,,,,,0.1]);
+  INSTRUMENTS[INSTRUMENT_BEEP2] = jsfxr([1,,0.09,0.2,0.4,0.5,,,,,,,,,,,,,1,,,,,0.1]);
 
   const music = () => {
     // instruments have numbers 1 - ....
@@ -452,7 +496,7 @@
 
     // Fire up a sequencer with all of the above
     new Sequencer([
-      120, // milliseconds per beat
+      200, // milliseconds per beat
       INSTRUMENTS, // The Audio Elements
       loops, // Loops
       song, // The actual song
@@ -487,8 +531,8 @@
   };
 
   var aa = new ArcadeAudio();
-  aa.add('die', 1, [[3,,0.1645,0.7236,0.3402,0.0317,,,,,,,,,,,,,1,,,,,0.5]])
-  aa.add('jump', 2, [[1,,0.1,,0.1,0.3,,0.2,,,,,,,,0.3,,,1,,,,,0.3]])
+  aa.add('die', 1, [[3,,0.1645,0.7236,0.34,0.03,,,,,,,,,,,,,1,,,,,0.4]])
+  aa.add('jump', 2, [[1,,0.1,,0.1,0.3,,0.2,,,,,,,,0.3,,,1,,,,,0.2]])
 
   const die = () => {
     state = STATE_DEAD
@@ -618,6 +662,13 @@
     player.y += player.velocity_y
     player.x += player.velocity_x
 
+    if (player.state === STATE_DUCK) {
+      player.gfx = player.mirror ? GFX.DINO_DUCK_REV : GFX.DINO_DUCK
+    } else {
+      let gfx = player.mirror ? GFX.DINO_REV : GFX.DINO
+      player.gfx = player.velocity_x ? getAnimatedGfx(gfx, 5) : gfx[0];
+    }
+
     if (player.y + player.h / 2 > viewport.y + viewport.h) {
       die()
     }
@@ -633,6 +684,9 @@
         randint(0, viewport.w - BOX_SIZE),
         boxes[boxes.length - 1].y + BOX_SIZE
       )
+
+      b.gfx = b.state === 0 ? GFX.BOX_SLEEP[0] : getAnimatedGfx(GFX.BOX, 60)
+
       boxes.push(b)
       maybeCreateCactus(b)
     }
@@ -642,6 +696,8 @@
     enemies = enemies.filter(e => inViewport(e)).map(e => {
       e.x += e.velocity_x
       e.y += e.velocity_y
+
+      e.gfx = getAnimatedGfx(gfxByEnemy(e), 10)
       return e
     })
   }
@@ -760,28 +816,20 @@
   const drawEntities = () => {
     // boxes
     for (let i = 0; i < boxes.length; i++) {
-      let gfx = boxes[i].state === 0 ? GFX.BOX_SLEEP[0] : getAnimatedGfx(GFX.BOX, 60)
-      renderSprite(boxes[i].x, boxes[i].y, gfx)
+      renderSprite(boxes[i].x, boxes[i].y, boxes[i].gfx)
     }
 
     // enemies
     for (let i = 0; i < enemies.length; i++) {
-      let gfx = gfxByEnemy(enemies[i])
-      renderSprite(enemies[i].x, enemies[i].y, getAnimatedGfx(gfx, 10))
+      renderSprite(enemies[i].x, enemies[i].y, enemies[i].gfx)
     }
 
     // player
-    if (player.state === STATE_DUCK) {
-      renderSprite(player.x, player.y, player.mirror ? GFX.DINO_DUCK_REV : GFX.DINO_DUCK)
-    } else {
-      let gfx = player.mirror ? GFX.DINO_REV : GFX.DINO
-      gfx = player.velocity_x ? getAnimatedGfx(gfx, 5) : gfx[0];
-      renderSprite(player.x, player.y, gfx)
-    }
+    renderSprite(player.x, player.y, player.gfx)
   }
 
   const drawMenu = () => {
-    renderSprite(player.x, player.y, GFX.DINO[0])
+    renderSprite(player.x, player.y, player.gfx)
 
     ctx.font = "13px 'Segoe UI', Tahoma, sans-serif"
     ctx.fillStyle = '#646464'

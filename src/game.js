@@ -177,10 +177,7 @@
     return true
   }
 
-  const overlaps = (a, player) => {
-    let aBoxes = a.gfx[4]
-    let bBoxes = player.gfx[4]
-
+  const overlapsBoxes = (aBoxes, bBoxes, a, player) => {
     var ax = a.velocity_x < 0 ? a.w : 0
     var ap = a.velocity_x < 0 ? -1 : 1
     var bx = player.velocity_x < 0 ? player.w : 0
@@ -201,6 +198,16 @@
           player.y + bBoxes[j][1] + bBoxes[j][3],
         ]
         if (A[0] < B[2] && A[2] > B[0] && A[1] < B[3] && A[3] > B[1]) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+  const overlaps = (a, player) => {
+    for (let i = 0; i < a.gfx.length; i++) {
+      for (let j = 0; j < player.gfx.length; j++) {
+        if (overlapsBoxes(a.gfx[i][4], player.gfx[j][4], a, player)) {
           return true
         }
       }
@@ -264,7 +271,7 @@
       y: y,
       w: BOX_SIZE,
       h: BOX_SIZE,
-      gfx: GFX.BOX_SLEEP[0]
+      gfx: [GFX.BOX_SLEEP[0]]
     }
   }
 
@@ -278,7 +285,7 @@
       y: y,
       w: PTERO_WIDTH,
       h: PTERO_HEIGHT,
-      gfx: velocity_x > 0 ? GFX.ENEMY : GFX.ENEMY_REV,
+      gfx: [velocity_x > 0 ? GFX.ENEMY : GFX.ENEMY_REV],
     }
   }
 
@@ -292,7 +299,7 @@
       y: y,
       w: CACTUS_WIDTH,
       h: CACTUS_HEIGHT,
-      gfx: GFX.CACTUS,
+      gfx: [GFX.CACTUS],
     }
   }
 
@@ -313,7 +320,7 @@
     color = '#fff'
     invColor = '#222'
 
-    lvlSpeed = 0.5;
+    lvlSpeed = 0.8;
     lvlSpeedup = 0.1;
     score = 0
 
@@ -329,7 +336,7 @@
       y: 128,
       w: 32,
       h: 32,
-      gfx: GFX.DINO[0],
+      gfx: [GFX.DINO[0]],
     }
 
     boxes = []
@@ -338,8 +345,9 @@
       player.y + player.h
     ))
     for (let i = 8; i < viewport.h * 2 / BOX_SIZE; i++) {
+      let x = randint(0, viewport.w - BOX_SIZE /2 )
       boxes.push(box(
-        randint(0, viewport.w - BOX_SIZE),
+        x - x % (BOX_SIZE / 2),
         i * BOX_SIZE
       ))
     }
@@ -536,6 +544,24 @@
 
   const die = () => {
     state = STATE_DEAD
+
+    // eyes
+    let eyes
+    if (player.state === STATE_DUCK) {
+      if (player.mirror) {
+        eyes = [5, 19]
+      } else {
+        eyes = [20, 19]
+      }
+    } else {
+      if (player.mirror) {
+        eyes = [9, 10]
+      } else {
+        eyes = [16, 10]
+      }
+    }
+    player.gfx.push([372, 28, 7, 3, [], ...eyes])
+
     hiscore = Math.max(hiscore, score)
     w.localStorage.setItem('hiscore', hiscore)
     canStartGame = false
@@ -648,8 +674,10 @@
           player.velocity_y = 0
         }
         b.state = STATE_HAS_ON_TOP
+        b.gfx = [getAnimatedGfx(GFX.BOX, 60)]
       } else {
         b.state = STATE_DEFAULT
+        b.gfx = [GFX.BOX_SLEEP[0]]
       }
     })
 
@@ -663,14 +691,10 @@
     player.x += player.velocity_x
 
     if (player.state === STATE_DUCK) {
-      player.gfx = player.mirror ? GFX.DINO_DUCK_REV : GFX.DINO_DUCK
+      player.gfx = [player.mirror ? GFX.DINO_DUCK_REV : GFX.DINO_DUCK]
     } else {
       let gfx = player.mirror ? GFX.DINO_REV : GFX.DINO
-      player.gfx = player.velocity_x ? getAnimatedGfx(gfx, 5) : gfx[0];
-    }
-
-    if (player.y + player.h / 2 > viewport.y + viewport.h) {
-      die()
+      player.gfx = [player.velocity_x ? getAnimatedGfx(gfx, 5) : gfx[0]];
     }
   }
 
@@ -685,8 +709,6 @@
         boxes[boxes.length - 1].y + BOX_SIZE
       )
 
-      b.gfx = b.state === 0 ? GFX.BOX_SLEEP[0] : getAnimatedGfx(GFX.BOX, 60)
-
       boxes.push(b)
       maybeCreateCactus(b)
     }
@@ -697,13 +719,17 @@
       e.x += e.velocity_x
       e.y += e.velocity_y
 
-      e.gfx = getAnimatedGfx(gfxByEnemy(e), 10)
+      e.gfx = [getAnimatedGfx(gfxByEnemy(e), 10)]
       return e
     })
   }
 
   const checkCollisions = () => {
     if (enemies.find(e => overlaps(e, player))) {
+      die()
+    }
+
+    if (player.y + player.h / 2 > viewport.y + viewport.h) {
       die()
     }
   }
@@ -715,14 +741,14 @@
     updateEnemies()
     updatePlayer(keys)
 
-    checkCollisions()
-
     every(steps, 10, increaseScore)
     every(steps, FPS * 12, onNextDay)
     every(steps, FPS, maybeAddEnemy)
 
     // level is moving up always..
     viewport.y += lvlSpeed;
+
+    checkCollisions()
   }
 
   const update = () => {
@@ -813,23 +839,29 @@
     }
   }
 
+  const drawEntity = (e) => {
+
+    for (let j = 0; j < e.gfx.length; j++) {
+      renderSprite(e.x + (e.gfx[j][5] || 0), e.y + (e.gfx[j][6] || 0), e.gfx[j])
+    }
+  }
   const drawEntities = () => {
     // boxes
     for (let i = 0; i < boxes.length; i++) {
-      renderSprite(boxes[i].x, boxes[i].y, boxes[i].gfx)
+      drawEntity(boxes[i])
     }
 
     // enemies
     for (let i = 0; i < enemies.length; i++) {
-      renderSprite(enemies[i].x, enemies[i].y, enemies[i].gfx)
+      drawEntity(enemies[i])
     }
 
     // player
-    renderSprite(player.x, player.y, player.gfx)
+    drawEntity(player)
   }
 
   const drawMenu = () => {
-    renderSprite(player.x, player.y, player.gfx)
+    drawEntity(player)
 
     ctx.font = "13px 'Segoe UI', Tahoma, sans-serif"
     ctx.fillStyle = '#646464'

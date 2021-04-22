@@ -1,7 +1,8 @@
-let gulp = require('gulp')
-let babel = require('gulp-babel')
-let uglify = require('gulp-uglify')
-let pump = require('pump')
+const gulp = require('gulp')
+const babel = require('gulp-babel')
+const uglify = require('gulp-uglify')
+const pump = require('pump')
+const exec = require('child_process').exec
 
 gulp.task('compress', cb => {
   pump([
@@ -42,8 +43,17 @@ gulp.task('copy_html', cb => {
   )
 })
 
-gulp.task('default', [
+gulp.task('zip', cb => {
+  exec('zip -r dist.zip dist', function (err, stdout, stderr) {
+    console.log(stdout);
+    console.log(stderr);
+    cb(err);
+  })
+})
+
+exports.default = gulp.series([
   'compress',
   'copy_png',
   'copy_html',
+  'zip',
 ])
